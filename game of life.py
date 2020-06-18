@@ -1,140 +1,79 @@
-class cell(object):
-    """
-    This class is used as cells of the Cellular Automaton lattice.
-    While not necessary for a conventional Conway's Game of Life program,
-    it will be helpful in expanding the Game into something more.
-    """
-    def __init__(self,life, x, y):
-        self.life = life
-        self.x = x
-        self.y = y
-    
-    def get_life(self):
-        return self.life
-    
-    def get_x(self):
-        return self.x
-    
-    def get_y(self):
-        return self.y
-    
-    def set_life(self, life):
-        self.life = life
-                
-    def evaluate(self, lattice):
-        """
-        Given the neighborhood, we calculate the next state of the cell,
-        according to rules of the Game.
-        Rules are to be changed and expanded for new projects.
-        """
-        neighborhood = self.get_neighborhood(lattice, 'Mr')
-        
-        count = 0
-        for n in neighborhood:
-            if n.get_life():
-                count += 1
-                
-        if self.get_life():
-            if count < 2 or count > 3:
-                self.set_life(0)
-            
-        else:
-            if count == 3:
-                self.set_life(1)
+import math
+import copy
+from cell import cell
 
+def print_life(lattice):
+    for x in lattice:
+        for y in x:
+            print(y.get_life(), end = '   ')
+        print('\n')
+    print(10*'-')
                 
-    def get_neighborhood(self, lattice, neighborhood_type):
-        """
-        There are several different types of neighborhoods in CA.
-        Here we can find von Neumann or Moore neighborhood of the given cell,
-        according to the given input.
-        """
-        #TODO: add a try-except statement
-        neighborhood = []
-        
-        if self.x == 0:
-            if self.y == 0:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[(self.x)+1][self.y],
-                                    lattice[self.x][(self.y)+1]]             
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x+1][self.y],
-                                    lattice[self.x][self.y+1],
-                                    lattice[self.x+1][self.y+1]]
-            elif self.y == len(lattice[0])-1:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[self.x][(self.y)-1],
-                                    lattice[(self.x)+1][self.y]]
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x][self.y-1],
-                                    lattice[self.x+1][self.y-1],
-                                    lattice[self.x+1][self.y]]
-            else:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[self.x][(self.y)-1],
-                                    lattice[(self.x)+1][self.y],
-                                    lattice[self.x][(self.y)+1]]
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x][self.y-1],
-                                    lattice[self.x+1][self.y-1],
-                                    lattice[self.x+1][self.y],
-                                    lattice[self.x][self.y+1],
-                                    lattice[self.x+1][self.y+1]]
-        elif self.x == len(lattice[0])-1:
-            if self.y == 0:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[(self.x)-1][self.y],
-                                    lattice[self.x][(self.y)+1]]
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x-1][self.y],
-                                    lattice[self.x-1][self.y+1],
-                                    lattice[self.x][self.y+1]]
+def set_lattice(length, choice):
+    '''
+    Given the choice of lattice pattern, sets a 2 dimensional, finite lattice,
+    digits of which store a cell each
+    '''
+#TODO: replace this with a function that sets n dimensional, infinite lattice.
+  
+    lattice = []
+    for n in range(length):
+        lattice.append([])
+    
+    if choice == 1:
+        for x in range(length):
+            for y in range(length):
+                lattice[x] += [cell(1,x,y) if x == math.floor(length/2)\
+                                               else cell(0,x,y)]
 
-            elif self.y == len(lattice[0])-1:
-                if neighborhood_type == 'vN':
-                        neighborhood = [lattice[self.x][(self.y)-1],
-                                        lattice[(self.x)-1][self.y]]
-                elif neighborhood_type == 'Mr':
-                        neighborhood = [lattice[self.x-1][self.y-1],
-                                        lattice[self.x][self.y-1],
-                                        lattice[self.x-1][self.y]]
-        else:
-            if self.y == 0:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[(self.x)-1][self.y],
-                                    lattice[(self.x)+1][self.y],
-                                    lattice[self.x][(self.y)+1]]
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x-1][self.y],
-                                    lattice[self.x+1][self.y],
-                                    lattice[self.x-1][self.y+1],
-                                    lattice[self.x][self.y+1],
-                                    lattice[self.x+1][self.y+1]]
-            elif self.y == len(lattice[0])-1:
-                if neighborhood_type == 'vN':
-                    neighborhood = [lattice[self.x][(self.y)-1],
-                                    lattice[(self.x)-1][self.y],
-                                    lattice[(self.x)+1][self.y]]
-                elif neighborhood_type == 'Mr':
-                    neighborhood = [lattice[self.x-1][self.y-1],
-                                    lattice[self.x][self.y-1],
-                                    lattice[self.x+1][self.y-1],
-                                    lattice[self.x-1][self.y],
-                                    lattice[self.x+1][self.y]]
-            else:
-                    if neighborhood_type == 'vN':
-                        neighborhood = [lattice[self.x][(self.y)-1],
-                                        lattice[(self.x)-1][self.y],
-                                        lattice[(self.x)+1][self.y],
-                                        lattice[self.x][(self.y)+1]]
-                    elif neighborhood_type == 'Mr':
-                        neighborhood = [lattice[self.x-1][self.y-1],
-                                        lattice[self.x][self.y-1],
-                                        lattice[self.x+1][self.y-1],
-                                        lattice[self.x-1][self.y],
-                                        lattice[self.x+1][self.y],
-                                        lattice[self.x-1][self.y+1],
-                                        lattice[self.x][self.y+1],
-                                        lattice[self.x+1][self.y+1]]
+    elif choice == 2:
+        for x in range(length):
+            for y in range(length):
+                lattice[x] += [cell(1,x,y) if ((y == math.floor(length/2)\
+                                                or y == math.floor(length/2)-1))\
+                                               and (x == math.floor(length/2)\
+                                                or x == math.floor(length/2)-1)\
+                                           else cell(0,x,y)]
+
+    elif choice == 3:
+        for x in range(length):
+            for y in range(length):
+                lattice[x] += [cell(1,x,y) if (x == math.floor(length/2)\
+                                               and (y == math.floor(length/2)+1\
+                                                or y == math.floor(length/2)\
+                                                or y == math.floor(length/2)-1))\
+                                           else cell(0,x,y)]
+
+    return lattice
+
+def play(lattice, number):
+    '''
+    After main() receives the input and sets the lattice,
+    play() takes care of the rest. Just to keep main() tiny and neat.
+    '''
+    
+    for n in range(number): 
+        lattice_copy = copy.deepcopy(lattice)
+        for x in lattice:
+            for y in x:
+                y.evaluate(lattice_copy)
         
-        return neighborhood
+        print_life(lattice) 
+        
+def main():
+    print("Choose a pattern: ")
+    print("1. Line\n2. Block\n3. Blinker")
+    choice = int(input())
+    print("Length of the nxn lattice: ")
+    size = int(input())
+    print("Number of evaluations: ")
+    number = int(input())
+    
+    lattice = set_lattice(size, choice)
+    
+    print_life(lattice)
+    
+    play(lattice, number)
+        
+if __name__ == '__main__':
+    main()
