@@ -1,8 +1,9 @@
-import random
-import math
-import string
-
 class cell(object):
+    """
+    This class is used as cells of the Cellular Automaton lattice.
+    While not necessary for a conventional Conway's Game of Life program,
+    it will be helpful in expanding the Game into something more.
+    """
     def __init__(self,life, x, y):
         self.life = life
         self.x = x
@@ -21,6 +22,11 @@ class cell(object):
         self.life = life
                 
     def evaluate(self, lattice):
+        """
+        Given the neighborhood, we calculate the next state of the cell,
+        according to rules of the Game.
+        Rules are to be changed and expanded for new projects.
+        """
         neighborhood = self.get_neighborhood(lattice, 'Mr')
         
         count = 0
@@ -38,6 +44,11 @@ class cell(object):
 
                 
     def get_neighborhood(self, lattice, neighborhood_type):
+        """
+        There are several different types of neighborhoods in CA.
+        Here we can find von Neumann or Moore neighborhood of the given cell,
+        according to the given input.
+        """
         #TODO: add a try-except statement
         neighborhood = []
         
