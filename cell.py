@@ -1,4 +1,20 @@
+import random
+
 class Cell(object):
+    pl = (1, 1, 1, 1, 1, 1, 1, 1)
+#pl[i] is probability of the cell neighborhood[i]
+#of being considered alive when it is really alive.
+    pd = (0, 0, 0, 0, 0, 0, 0, 0,)
+#pd[i] is probability of the cell neighborhood[i]
+#of being considered alive when it is really dead.
+    MAXO = 3
+#MAXO = Maximum number of neighbouring living cells not to die of overpopulation
+    MINU = 2
+#MINU = Minimum number of neighbouring living cells not to die of underpopulation
+    MAXB = 3
+#MAXB = Maximum number of neighbouring living cells to be born in the next generation
+    MINB = 3
+#MINB = Minimum number of neighbouring living cells to be born in the next generation
     """
     This class is used as cells of the Cellular Automaton lattice.
     While not necessary for a conventional Conway's Game of Life program,
@@ -30,18 +46,20 @@ class Cell(object):
         neighborhood = self.get_neighborhood(lattice, 'Mr')
         
         count = 0
-        for n in neighborhood:
-            if n.get_life():
-                count += 1
+        for n in range(len(neighborhood)):
+            if neighborhood[n].get_life():
+                if random.random() <= Cell.pl[n]:
+                    count += 1
+            else:
+                if random.random() <= Cell.pd[n]:
+                    count += 1
                 
         if self.get_life():
-            if count < 2 or count > 3:
+            if count < Cell.MINU or count > Cell.MAXO:
                 self.set_life(0)
-            
         else:
-            if count == 3:
+            if count >= Cell.MINB and count <= Cell.MAXB:
                 self.set_life(1)
-
                 
     def get_neighborhood(self, lattice, neighborhood_type):
         """
