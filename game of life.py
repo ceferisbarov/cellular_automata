@@ -1,14 +1,16 @@
+import matplotlib.pyplot as plt
 import math
 import copy
-from cell import cell
+from cell import Cell
 
-def print_life(lattice):
-    for x in lattice:
-        for y in x:
-            print(y.get_life(), end = '   ')
-        print('\n')
-    print(10*'-')
+def get_lattice_life(lattice):
+    lattice_life = [[] for n in range(len(lattice))]
+    for x in range(len(lattice)):
+        for y in lattice[x]:
+            lattice_life[x].append(y.get_life())
                 
+    return lattice_life
+
 def set_lattice(length, choice):
     '''
     Given the choice of lattice pattern, sets a 2 dimensional, finite lattice,
@@ -23,42 +25,43 @@ def set_lattice(length, choice):
     if choice == 1:
         for x in range(length):
             for y in range(length):
-                lattice[x] += [cell(1,x,y) if x == math.floor(length/2)\
-                                               else cell(0,x,y)]
+                lattice[x] += [Cell(1,x,y) if x == math.floor(length/2)\
+                                               else Cell(0,x,y)]
 
     elif choice == 2:
         for x in range(length):
             for y in range(length):
-                lattice[x] += [cell(1,x,y) if ((y == math.floor(length/2)\
+                lattice[x] += [Cell(1,x,y) if ((y == math.floor(length/2)\
                                                 or y == math.floor(length/2)-1))\
                                                and (x == math.floor(length/2)\
                                                 or x == math.floor(length/2)-1)\
-                                           else cell(0,x,y)]
+                                           else Cell(0,x,y)]
 
     elif choice == 3:
         for x in range(length):
             for y in range(length):
-                lattice[x] += [cell(1,x,y) if (x == math.floor(length/2)\
+                lattice[x] += [Cell(1,x,y) if (x == math.floor(length/2)\
                                                and (y == math.floor(length/2)+1\
                                                 or y == math.floor(length/2)\
                                                 or y == math.floor(length/2)-1))\
-                                           else cell(0,x,y)]
+                                           else Cell(0,x,y)]
 
     return lattice
 
-def play(lattice, number):
+def play(lattice, evaluation_count):
     '''
     After main() receives the input and sets the lattice,
     play() takes care of the rest. Just to keep main() tiny and neat.
     '''
     
-    for n in range(number): 
+    for n in range(evaluation_count): 
         lattice_copy = copy.deepcopy(lattice)
         for x in lattice:
             for y in x:
                 y.evaluate(lattice_copy)
-        
-        print_life(lattice) 
+    
+        plt.imshow(get_lattice_life(lattice))
+        plt.show()
         
 def main():
     print("Choose a pattern: ")
@@ -67,13 +70,12 @@ def main():
     print("Length of the nxn lattice: ")
     size = int(input())
     print("Number of evaluations: ")
-    number = int(input())
+    evaluation_count = int(input())
     
     lattice = set_lattice(size, choice)
     
-    print_life(lattice)
-    
-    play(lattice, number)
+    play(lattice, evaluation_count)
+
         
 if __name__ == '__main__':
     main()
