@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import copy
+import random
 from cell import Cell
 
 def get_lattice_life(lattice):
@@ -10,7 +11,7 @@ def get_lattice_life(lattice):
             lattice_life[x].append(y.get_life())
                 
     return lattice_life
-
+                
 def set_lattice(length, choice):
     '''
     Given the choice of lattice pattern, sets a 2 dimensional, finite lattice,
@@ -45,16 +46,24 @@ def set_lattice(length, choice):
                                                 or y == math.floor(length/2)\
                                                 or y == math.floor(length/2)-1))\
                                            else Cell(0,x,y)]
+    elif choice == 4:
+        for x in range(length):
+            for y in range(length):
+                lattice[x] += [Cell(1,x,y) if (random.random() <= 0.5)\
+                                           else Cell(0,x,y)]
+    
+    plt.imshow(get_lattice_life(lattice))
+    plt.show()
 
     return lattice
 
-def play(lattice, evaluation_count):
+def play(lattice, number):
     '''
     After main() receives the input and sets the lattice,
     play() takes care of the rest. Just to keep main() tiny and neat.
     '''
     
-    for n in range(evaluation_count): 
+    for n in range(number): 
         lattice_copy = copy.deepcopy(lattice)
         for x in lattice:
             for y in x:
@@ -62,20 +71,20 @@ def play(lattice, evaluation_count):
     
         plt.imshow(get_lattice_life(lattice))
         plt.show()
+
         
 def main():
     print("Choose a pattern: ")
-    print("1. Line\n2. Block\n3. Blinker")
+    print("1. Line\n2. Block\n3. Blinker\n4. Random")
     choice = int(input())
     print("Length of the nxn lattice: ")
     size = int(input())
     print("Number of evaluations: ")
-    evaluation_count = int(input())
+    number = int(input())
     
     lattice = set_lattice(size, choice)
-    
-    play(lattice, evaluation_count)
-
         
+    play(lattice, number)
+    
 if __name__ == '__main__':
     main()
