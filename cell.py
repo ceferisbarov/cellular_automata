@@ -1,4 +1,4 @@
-class cell(object):
+class Cell(object):
     """
     This class is used as cells of the Cellular Automaton lattice.
     While not necessary for a conventional Conway's Game of Life program,
